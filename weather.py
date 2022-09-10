@@ -1,18 +1,23 @@
 # weather.py
 # Discord bot geocodes placename in user message and retrieves weather data and imagery from National Weather Service API based on radar station code.
 # Created by Marcus Perry May 8, 2022
+# Updated  Aug 19, 2022
 from genericpath import exists
-import discord, os, requests, json, datetime, errno
-from json import JSONDecodeError
+import discord, os, json, requests, datetime, errno
+# try:
+#     import simplejson as json
+# except ImportError:
+#     import json
+
 from discord.ext import commands
+from json import JSONDecodeError
 
 from dotenv import load_dotenv
 from os.path import join, dirname
 from dotenv import load_dotenv
 
-# Create date/time variable for updating weather via unique URL
-date_var = datetime.datetime.now()
-date_url = date_var.strftime("%d"+"%m"+"%y"+"%M")
+# Date var maker moved from here to within async invocation
+# date_url = date_var.strftime("%d"+"%m"+"%y"+"%M")
 
 # Load tokens from .env file
 dotenv_path = join(dirname(__file__), '.env')
@@ -33,7 +38,9 @@ embed.set_image(url="")
 
 @bot.event
 async def on_ready():
-    print('We have logged in as {0.user}'.format(bot))
+    login_load = 'We have logged in as {0.user}'.format(bot)
+    print(login_load)
+
 
 # AGOL URL example for further customization 
 # myURL = "https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?f=json&singleLine={}&outFields=location&token=".format(arg)+AGOL_TOKEN
@@ -48,7 +55,6 @@ success_key = 'success'
 #     except ValueError:
 #         return False
 #     except TypeError:
-#         return False
 #     return True
 
 @bot.command()
@@ -62,6 +68,9 @@ async def weather(weather, *, arg):
     loc_y = round(loc_dict2["y"], 2)
     coords = str(loc_x)+","+str(loc_y)
     gov_url = "https://forecast.weather.gov/MapClick.php?lat={0}&lon={1}&FcstType=json".format(loc_y,loc_x)
+    # Create date/time variable for updating weather via unique URL
+    date_var = datetime.datetime.now()
+    date_url = date_var.strftime("%d%m%y%H%M")
     try:
         gov_response = requests.get(gov_url, allow_redirects=False)
         if gov_response.status_code == 200:
@@ -87,7 +96,7 @@ async def weather(weather, *, arg):
     except Exception as e:
         await weather.send("unknown exception:{}".format(e))
 
+
+
+
 bot.run(DISCORD_TOKEN, bot=True)
-
-
-

@@ -91,10 +91,17 @@ async def weather(weather, *, arg):
                 radar_code = gov_response_json["location"]["radar"]
                 current_list = gov_response_json["data"]["text"]
                 current = current_list.pop(0)
+                nowTemp = gov_response_json["data"]["currentobservation"]["Temp"]
+                temp = nowTemp.pop(0)
+                nowHum = gov_response_json["data"]["currentobservation"]["Relh"]
+                hum = nowHum.pop(0)
+                nowSky = gov_response_json["data"]["currentobservation"]["Weather"]
+                sky = nowSky.pop(0)
+                nowObs = "It is currently {0},{1} degrees F with a relative humidity of {2}.".format(sky, temp, hum)
             # Discord caches embeds by URL, so vary URL each time to refresh when a request for a radar station is repeated.
                 embed_URL = "https://radar.weather.gov/ridge/lite/{0}_loop.gif?{1}".format(radar_code, date_url)
                 embed.set_image(url=embed_URL)
-                message_load = "Current forecast and most recent regional radar for "+str.title(arg)+" ("+coords+"):"+"\n"+">>> "+current+"\n"
+                message_load = nowObs+"\n"+"Forecast and most recent regional radar for "+str.title(arg)+"("+coords+"):"+"\n"+current+"\n"+"\n"
                 await weather.send(message_load)
                 await weather.send(embed=embed) 
         else:

@@ -92,11 +92,8 @@ async def weather(weather, *, arg):
                 current_list = gov_response_json["data"]["text"]
                 current = current_list.pop(0)
                 nowTemp = gov_response_json["currentobservation"]["Temp"]
-                #temp = nowObs.pop(0)
                 nowHum = gov_response_json["currentobservation"]["Relh"]
-                #hum = nowHum.pop(0)
                 nowSky = gov_response_json["currentobservation"]["Weather"]
-                #sky = nowSky.pop(0)
                 nowMsg = "It is currently {0}, {1}ºF with a relative humidity of {2}.".format(nowSky, nowTemp, nowHum)
             # Discord caches embeds by URL, so vary URL each time to refresh when a request for a radar station is repeated.
                 embed_URL = "https://radar.weather.gov/ridge/lite/{0}_loop.gif?{1}".format(radar_code, date_url)
@@ -151,7 +148,7 @@ async def wind(wind, *, arg):
                 radar_code = radar_codeOG.lower()
                 current_list = gov_response_json["data"]["text"]
                 current = current_list.pop(0)
-                
+                nowWind = gov_response_json["currentobservation"]["Wind"]
             # Discord caches embeds by URL, so vary URL each time to refresh when a request for a radar station is repeated.
                 base_URL = "https://opengeo.ncep.noaa.gov/geoserver/{}/ows".format(radar_code)
                 layerlist = "{0}_bvel_raw".format(radar_code)
@@ -162,7 +159,7 @@ async def wind(wind, *, arg):
                 embed_URL = base_URL+params
                 # uncomment for debug: print(embed_URL)
                 embed.set_image(url=embed_URL)
-                message_load = "Current forecast and Super Resolution Base [wind] Velocity (BVEL) for "+str.title(arg)+""+"\n"+">>> "+current+"\n"
+                message_load = "Current wind speed: " + nowWind +" and Super Resolution Base [wind] Velocity (BVEL) for "+str.title(arg)+""+"\n"+">>> "+"\n"
                 await wind.send(message_load)
                 await wind.send(embed=embed) 
         else:

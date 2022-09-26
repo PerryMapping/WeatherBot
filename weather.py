@@ -148,7 +148,8 @@ async def wind(wind, *, arg):
                 radar_code = radar_codeOG.lower()
                 current_list = gov_response_json["data"]["text"]
                 current = current_list.pop(0)
-                nowWind = gov_response_json["currentobservation"]["Wind"]
+                nowWind = gov_response_json["currentobservation"]["Winds"]
+                nowGust = gov_response_json["currentobservation"]["Gust"]
             # Discord caches embeds by URL, so vary URL each time to refresh when a request for a radar station is repeated.
                 base_URL = "https://opengeo.ncep.noaa.gov/geoserver/{}/ows".format(radar_code)
                 layerlist = "{0}_bvel_raw".format(radar_code)
@@ -159,7 +160,7 @@ async def wind(wind, *, arg):
                 embed_URL = base_URL+params
                 # uncomment for debug: print(embed_URL)
                 embed.set_image(url=embed_URL)
-                message_load = "Current wind speed: " + nowWind +" and Super Resolution Base [wind] Velocity (BVEL) for "+str.title(arg)+""+"\n"+">>> "+"\n"
+                message_load = "Current wind speed: " + nowWind + " with gusts up to "+ nowGust +"."+"\n"+"Super Resolution Base Velocity (BVEL) Doppler return for "+str.title(arg)+":"+"\n"
                 await wind.send(message_load)
                 await wind.send(embed=embed) 
         else:
